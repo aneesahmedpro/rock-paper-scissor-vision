@@ -5,15 +5,15 @@ import time
 
 import numpy as np
 
-from config import CAMVISION_IMG_WIDTH, CAMVISION_IMG_HEIGHT
+from config import CNN_INPUT_IMG_WIDTH, CNN_INPUT_IMG_HEIGHT
 from gamedisplay import GameDisplay
 
 
 def main():
 
-    img_array = np.zeros((CAMVISION_IMG_HEIGHT, CAMVISION_IMG_WIDTH))
+    img_array = np.zeros((CNN_INPUT_IMG_HEIGHT, CNN_INPUT_IMG_WIDTH))
     img_array = img_array.astype(np.uint8)
-    col = CAMVISION_IMG_WIDTH // 2
+    col = CNN_INPUT_IMG_WIDTH // 2
     img_array[:, col:] = 255
     postures = ['rock', 'paper', 'scissor', 'nothing']
     gamedisplay = GameDisplay()

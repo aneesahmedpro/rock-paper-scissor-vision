@@ -3,7 +3,7 @@ import tkinter as tk
 import numpy as np
 import cv2
 
-from config import CAMVISION_IMG_WIDTH, CAMVISION_IMG_HEIGHT
+from config import CNN_INPUT_IMG_WIDTH, CNN_INPUT_IMG_HEIGHT
 
 
 class GameDisplay:
@@ -32,8 +32,8 @@ class GameDisplay:
 
         # Calculate appropriate window positions (side-by-side arrangment)
         response_img_width, response_img_height = self.img_rock.shape[:2]
-        both_win_combi_height = max(CAMVISION_IMG_HEIGHT, response_img_height)
-        both_win_combi_width = CAMVISION_IMG_WIDTH + response_img_width
+        both_win_combi_height = max(CNN_INPUT_IMG_HEIGHT, response_img_height)
+        both_win_combi_width = CNN_INPUT_IMG_WIDTH + response_img_width
         win_camvision_x = (screen_width - both_win_combi_width) // 2
         win_camvision_y = (screen_height - both_win_combi_height) // 2
         win_response_x = win_camvision_x + 160

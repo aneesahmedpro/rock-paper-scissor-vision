@@ -2,7 +2,11 @@ import numpy as np
 import pygame
 import pygame.camera
 
-from config import CAMVISION_IMG_WIDTH, CAMVISION_IMG_HEIGHT
+from config import (
+    CNN_INPUT_IMG_WIDTH, CNN_INPUT_IMG_HEIGHT,
+    CAM_RAW_FRAME_WIDTH, CAM_RAW_FRAME_HEIGHT,
+)
+from image_utils import array_from_surface
 
 
 class CamVision:
@@ -13,19 +17,34 @@ class CamVision:
         cam_device = pygame.camera.list_cameras()[cam_device_num]
         self.cam = pygame.camera.Camera(
             cam_device,
-            (CAMVISION_IMG_WIDTH, CAMVISION_IMG_HEIGHT))
+            (CAM_RAW_FRAME_WIDTH, CAM_RAW_FRAME_HEIGHT))
         self.cam.start()
-        self.cam_surface = pygame.surface.Surface(
-            (CAMVISION_IMG_WIDTH, CAMVISION_IMG_HEIGHT))
+
+        if self.cam.get_size() != (CAM_RAW_FRAME_WIDTH, CAM_RAW_FRAME_HEIGHT):
+            raise RuntimeError(
+                'Unable to set camera frame dimensions {}x{} on device {}'
+                .format(
+                    CAM_RAW_FRAME_WIDTH,
+                    CAM_RAW_FRAME_HEIGHT,
+                    self.device_num))
+
+        self.cam_raw_img_surface = pygame.surface.Surface(
+            (CAM_RAW_FRAME_WIDTH, CAM_RAW_FRAME_HEIGHT))
+        self.cnn_input_img_surface = pygame.surface.Surface(
+            (CNN_INPUT_IMG_WIDTH, CNN_INPUT_IMG_HEIGHT))
+
         self.learned_bg = None
         self.latest_frame = None
         self.latest_fg_mask = None
 
     def capture_now(self):
 
-        self.cam.get_image(self.cam_surface)
-        array_img = pygame.surfarray.array3d(self.cam_surface).swapaxes(0, 1)
-        self.latest_frame = array_img
+        self.cam.get_image(self.cam_raw_img_surface)
+        pygame.transform.scale(
+            self.cam_raw_img_surface,
+            (CNN_INPUT_IMG_WIDTH, CNN_INPUT_IMG_HEIGHT),
+            self.cnn_input_img_surface)
+        self.latest_frame = array_from_surface(self.cnn_input_img_surface)
 
     def learn_bg_now(self, img_samples_count):
 

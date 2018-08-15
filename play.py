@@ -4,7 +4,7 @@ import tensorflow as tf
 
 from local_settings import MODEL_DIR
 import config
-from config import CAMVISION_IMG_WIDTH, CAMVISION_IMG_HEIGHT
+from config import CNN_INPUT_IMG_WIDTH, CNN_INPUT_IMG_HEIGHT
 from cnn import cnn_model_fn
 from camvision import CamVision
 from gamedisplay import GameDisplay
@@ -40,7 +40,7 @@ def main():
         ds = tf.data.Dataset.from_generator(
             input_generator,
             tf.float32,
-            tf.TensorShape([CAMVISION_IMG_HEIGHT, CAMVISION_IMG_WIDTH]))
+            tf.TensorShape([CNN_INPUT_IMG_HEIGHT, CNN_INPUT_IMG_WIDTH]))
         feature = ds.make_one_shot_iterator().get_next()
         return {'input': feature}
 

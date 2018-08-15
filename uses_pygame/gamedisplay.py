@@ -1,7 +1,8 @@
 import numpy as np
 import pygame
 
-from config import CAMVISION_IMG_WIDTH, CAMVISION_IMG_HEIGHT
+from config import CNN_INPUT_IMG_WIDTH, CNN_INPUT_IMG_HEIGHT
+from image_utils import surface_from_array
 
 
 class GameDisplay:
@@ -13,7 +14,7 @@ class GameDisplay:
         self.img_scissor = pygame.image.load('assets/scissor.png')
 
         self.rect_camvision_img = pygame.Rect(
-            (0, 0, CAMVISION_IMG_WIDTH, CAMVISION_IMG_HEIGHT))
+            (0, 0, CNN_INPUT_IMG_WIDTH, CNN_INPUT_IMG_HEIGHT))
         self.rect_response_img = self.img_rock.get_rect().move(
             self.rect_camvision_img.width, 0)
         self.rect_display = self.rect_camvision_img.union(
@@ -43,9 +44,9 @@ class GameDisplay:
 
         pygame.display.update(self.rect_response_img)
 
-    def show_camvision_image(self, array_img):
+    def show_camvision_image(self, image_array):
 
-        surface = pygame.surfarray.make_surface(array_img.swapaxes(0, 1))
+        surface = surface_from_array(image_array)
         self.display_surface.blit(surface, self.rect_camvision_img)
         pygame.display.update(self.rect_camvision_img)
 

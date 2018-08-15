@@ -1,7 +1,10 @@
 import numpy as np
 import cv2
 
-from config import CAMVISION_IMG_WIDTH, CAMVISION_IMG_HEIGHT
+from config import (
+    CNN_INPUT_IMG_WIDTH, CNN_INPUT_IMG_HEIGHT,
+    CAM_RAW_FRAME_WIDTH, CAM_RAW_FRAME_HEIGHT,
+)
 
 
 class CamVision:
@@ -14,13 +17,17 @@ class CamVision:
             raise RuntimeError(
                 'Unable to open camera device {}'.format(self.device_num))
 
-        retval = self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, CAMVISION_IMG_WIDTH)
-        retval = self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAMVISION_IMG_HEIGHT)
-        if not retval:
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, CAM_RAW_FRAME_WIDTH)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, CAM_RAW_FRAME_HEIGHT)
+        if (
+            self.cap.get(cv2.CAP_PROP_FRAME_WIDTH) != CAM_RAW_FRAME_WIDTH
+            or self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT) != CAM_RAW_FRAME_HEIGHT
+        ):
             raise RuntimeError(
                 'Unable to set camera frame dimensions {}x{} on device {}'
                 .format(
-                    CAMVISION_IMG_WIDTH, CAMVISION_IMG_HEIGHT,
+                    CAM_RAW_FRAME_WIDTH,
+                    CAM_RAW_FRAME_HEIGHT,
                     self.device_num))
 
         self.learned_bg = None
@@ -33,6 +40,7 @@ class CamVision:
         if not ret:
             raise RuntimeError(
                 'Failed to read frame from camera device', self.device_num)
+        img = cv2.resize(img, (CNN_INPUT_IMG_WIDTH, CNN_INPUT_IMG_HEIGHT))
         self.latest_frame = img.astype(np.uint8)
 
     def learn_bg_now(self, img_samples_count):
