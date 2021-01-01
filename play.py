@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 from local_settings import MODEL_DIR
 import config

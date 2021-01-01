@@ -1,0 +1,7 @@
+/.venv
+__pycache__
+/camvision.py
+/gamedisplay.py
+/image_utils.py
+training_data/npy/*.npy
+.ipynb_checkpoints/

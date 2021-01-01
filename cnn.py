@@ -1,4 +1,4 @@
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 
 
 def cnn_model_fn(features, labels, mode):
@@ -67,6 +67,20 @@ def cnn_model_fn(features, labels, mode):
         'classes': predicted_classes,
         'probabilities': predicted_probabilities,
     }
+
+    #### For debugging and exploring, uncomment the following snippet.
+    #### Sends output of all layers as part of prediction result.
+
+    # prediction_data.update({
+    #     'conv1': conv1,
+    #     'pool1': pool1,
+    #     'conv2': conv2,
+    #     'pool2': pool2,
+    #     'flat': flat,
+    #     'dense': dense,
+    #     'dropout': dropout,
+    #     'logits': logits,
+    # })
 
     if mode == tf.estimator.ModeKeys.PREDICT:
         return tf.estimator.EstimatorSpec(mode, prediction_data)
